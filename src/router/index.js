@@ -119,10 +119,32 @@ export const constantRoutes = [
         meta: { title: '当前巡检结果', icon: 'table' }
       },
       {
-        path: 'tree',
+        path: 'history',
         name: '巡检历史',
         component: () => import('@/views/storage/history/index'),
         meta: { title: '巡检历史', icon: 'tree' }
+      }
+    ]
+  },
+
+  {
+    path: '/strategy',
+    component: Layout,
+    redirect: '/strategy/list',
+    name: '巡检策略',
+    meta: { title: '巡检策略', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'list',
+        name: '策略列表',
+        component: () => import('@/views/strategy/list/index'),
+        meta: { title: '策略列表', icon: 'table' }
+      },
+      {
+        path: 'edit',
+        name: '策略编制',
+        component: () => import('@/views/strategy/edit/index'),
+        meta: { title: '策略编制', icon: 'tree' }
       }
     ]
   },
