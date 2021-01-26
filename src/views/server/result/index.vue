@@ -24,6 +24,7 @@
       border
       fit
       highlight-current-row
+      @filter-change="handleFilterChange"
     >
       <el-table-column align="center" label="序号" width="95" fixed>
         <template slot-scope="scope">
@@ -48,6 +49,7 @@
         :filter-method="filterTag"
         align="center"
         fixed
+        prop="status"
       >
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{
@@ -61,39 +63,39 @@
           <span>{{ scope.row.display_time }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="CPU利用率" width="100" align="center">
+      <el-table-column label="CPU利用率" width="120" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.author }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="内存利用率" width="100" align="center">
+      <el-table-column label="内存利用率" width="120" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.author }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="存储利用率" width="100" align="center">
+      <el-table-column label="存储利用率" width="120" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.author }}</span>
         </template>
       </el-table-column>
       <el-table-column label="服务情况" width="200" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <el-button type="text" @click="showMsgDetail(scope.row.title)">{{ scope.row.author }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="网络连接状态" width="200" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <el-button type="text" @click="showMsgDetail(scope.row.title)">{{ scope.row.author }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="丢包状况" width="200" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <el-button type="text" @click="showMsgDetail(scope.row.title)">{{ scope.row.author }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="利用率趋势" width="200" align="center">
+      <el-table-column label="利用率趋势" width="100" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <el-button @click="showAvbDetail(scope.row.title)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -102,6 +104,28 @@
       :total="total"
       @current-change="current_change"
     />
+    <el-dialog
+      title="详情"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <span>{{ msgDetail }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="利用率趋势"
+      :visible.sync="chartVisible"
+      width="80%"
+      :before-close="handleChartClose"
+    >
+      <span>{{ chartDetail }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="chartVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -120,16 +144,19 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: [],
       listLoading: true,
-      total: 30,
+      total: 0,
       pagesize: 5,
       currentPage: 1,
       form: {
         dc: '西咸',
         ip: ''
-      }
-
+      },
+      dialogVisible: false,
+      chartVisible: false,
+      msgDetail: null,
+      chartDetail: null
     }
   },
   created() {
@@ -155,6 +182,17 @@ export default {
     },
     filterTag(value, row) {
       return row.status === value
+    },
+    handleFilterChange(filters) {
+      console.log(filters)
+    },
+    showMsgDetail(msg) {
+      this.dialogVisible = true
+      this.msgDetail = msg
+    },
+    showAvbDetail(msg) {
+      this.chartVisible = true
+      this.chartDetail = msg
     }
   }
 }
