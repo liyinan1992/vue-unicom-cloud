@@ -2,11 +2,9 @@
   <div class="app-container">
     <el-form ref="form" :inline="true" :model="form" label-width="120px">
       <el-radio-group v-model="form.dc">
-        <el-radio-button label="亦庄" />
-        <el-radio-button label="廊坊" />
-        <el-radio-button label="呼和" />
         <el-radio-button label="西咸" />
-        <el-radio-button label="郑州" />
+        <el-radio-button label="CT-O" />
+        <el-radio-button label="测试区" />
       </el-radio-group>
       <el-form-item label="IP">
         <el-input v-model="form.ip" />
@@ -115,7 +113,7 @@ export default {
       this.currentPage = currentPage
     },
     doSearch() {
-      console.log('查询')
+      console.log(this.form.time)
       this.fetchData()
     },
     showMsgDetail(msg) {

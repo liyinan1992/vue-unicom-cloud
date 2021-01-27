@@ -2,14 +2,22 @@
   <div class="app-container">
     <el-form ref="form" :inline="true" :model="form" label-width="120px">
       <el-radio-group v-model="form.dc">
-        <el-radio-button label="亦庄" />
-        <el-radio-button label="廊坊" />
-        <el-radio-button label="呼和" />
         <el-radio-button label="西咸" />
-        <el-radio-button label="郑州" />
+        <el-radio-button label="CT-O" />
+        <el-radio-button label="测试区" />
       </el-radio-group>
       <el-form-item label="IP">
         <el-input v-model="form.ip" />
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-select v-model="form.status" multiple placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="doSearch">查询</el-button>
@@ -17,14 +25,12 @@
       </el-form-item>
     </el-form>
     <el-table
-      ref="filterTable"
       v-loading="listLoading"
       :data="list.slice((currentPage-1)*pagesize,currentPage*pagesize)"
       element-loading-text="Loading"
       border
       fit
       highlight-current-row
-      @filter-change="handleFilterChange"
     >
       <el-table-column align="center" label="序号" width="95" fixed>
         <template slot-scope="scope">
@@ -45,11 +51,8 @@
         class-name="status-col"
         label="设备状态"
         width="110"
-        :filters="[{ text: '正常', value: '正常' }, { text: '异常', value: '异常' }]"
-        :filter-method="filterTag"
         align="center"
         fixed
-        prop="status"
       >
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{
@@ -118,10 +121,27 @@
     <el-dialog
       title="利用率趋势"
       :visible.sync="chartVisible"
-      width="80%"
+      fullscreen="true"
       :before-close="handleChartClose"
     >
-      <span>{{ chartDetail }}</span>
+      <el-row>
+        <h3>CPU利用率趋势（%）</h3>
+      </el-row>
+      <el-row>
+        <line-chart :chart-data="lineChartData.cpuAvb" />
+      </el-row>
+      <el-row>
+        <h3>内存利用率趋势（%）</h3>
+      </el-row>
+      <el-row>
+        <line-chart :chart-data="lineChartData.memeryAvb" />
+      </el-row>
+      <el-row>
+        <h3>内存利用率趋势（%）</h3>
+      </el-row>
+      <el-row>
+        <line-chart :chart-data="lineChartData.memeryAvb" />
+      </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="chartVisible = false">确 定</el-button>
       </span>
@@ -131,6 +151,25 @@
 
 <script>
 import { getList } from '@/api/table'
+import LineChart from './components/LineChart'
+
+const lineChartData = {
+  cpuAvb: {
+    timeData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+    expectedData: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
+    actualData: [90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98]
+  },
+  memeryAvb: {
+    timeData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+    expectedData: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
+    actualData: [90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98]
+  },
+  storageAvb: {
+    timeData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+    expectedData: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
+    actualData: [90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98]
+  }
+}
 
 export default {
   filters: {
@@ -142,6 +181,9 @@ export default {
       return statusMap[status]
     }
   },
+  components: {
+    LineChart
+  },
   data() {
     return {
       list: [],
@@ -151,12 +193,21 @@ export default {
       currentPage: 1,
       form: {
         dc: '西咸',
-        ip: ''
+        ip: '',
+        status: []
       },
+      options: [{
+        value: '正常',
+        label: '正常'
+      }, {
+        value: '异常',
+        label: '异常'
+      }],
       dialogVisible: false,
       chartVisible: false,
       msgDetail: null,
-      chartDetail: null
+      chartDetail: null,
+      lineChartData: lineChartData
     }
   },
   created() {
@@ -180,12 +231,6 @@ export default {
     doCancel() {
       console.log('重置')
     },
-    filterTag(value, row) {
-      return row.status === value
-    },
-    handleFilterChange(filters) {
-      console.log(filters)
-    },
     showMsgDetail(msg) {
       this.dialogVisible = true
       this.msgDetail = msg
@@ -193,6 +238,12 @@ export default {
     showAvbDetail(msg) {
       this.chartVisible = true
       this.chartDetail = msg
+    },
+    handleClose() {
+      this.dialogVisible = false
+    },
+    handleChartClose() {
+      this.chartVisible = false
     }
   }
 }
