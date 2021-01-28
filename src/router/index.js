@@ -75,6 +75,12 @@ export const constantRoutes = [
         meta: { title: '巡检历史', icon: 'tree' }
       },
       {
+        path: 'abnormal',
+        name: '异常结果',
+        component: () => import('@/views/server/abnormal/index'),
+        meta: { title: '异常结果', icon: 'el-icon-warning' }
+      },
+      {
         path: 'instruction',
         name: '指令执行',
         component: () => import('@/views/server/instruction/index'),
@@ -131,8 +137,8 @@ export const constantRoutes = [
     path: '/strategy',
     component: Layout,
     redirect: '/strategy/list',
-    name: '巡检策略',
-    meta: { title: '巡检策略', icon: 'el-icon-s-help' },
+    name: '作业策略',
+    meta: { title: '作业策略', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'list',
@@ -144,6 +150,28 @@ export const constantRoutes = [
         path: 'edit',
         name: '策略编制',
         component: () => import('@/views/strategy/edit/index'),
+        meta: { title: '策略编制', icon: 'tree' }
+      }
+    ]
+  },
+
+  {
+    path: '/alarm',
+    component: Layout,
+    redirect: '/alarm/list',
+    name: '预警管理',
+    meta: { title: '预警管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'list',
+        name: '策略列表',
+        component: () => import('@/views/alarm/list/index'),
+        meta: { title: '策略列表', icon: 'table' }
+      },
+      {
+        path: 'edit',
+        name: '策略编制',
+        component: () => import('@/views/alarm/edit/index'),
         meta: { title: '策略编制', icon: 'tree' }
       }
     ]

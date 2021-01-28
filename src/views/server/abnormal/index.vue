@@ -50,14 +50,14 @@
           <span>{{ scope.row.display_time }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="执行命令" align="center">
+      <el-table-column label="异常描述" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.author }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="执行结果" width="150" align="center">
+      <el-table-column label="详情" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="showMsgDetail(scope.row.title)">查看</el-button>
+          <el-button @click="showMsgDetail(scope.row)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,12 +67,17 @@
       @current-change="current_change"
     />
     <el-dialog
-      title="执行结果详情"
+      title="异常结果详情"
       :visible.sync="dialogVisible"
       width="50%"
       :before-close="handleClose"
     >
-      <span>{{ msgDetail }}</span>
+      <el-row>
+        <span>{{ msgTitle }}</span>
+      </el-row>
+      <el-row>
+        <span>{{ msgDetail }}</span>
+      </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
@@ -97,8 +102,12 @@ export default {
         time: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
       dialogVisible: false,
-      msgDetail: null
+      msgDetail: null,
+      msgTitle: null
     }
+  },
+  created() {
+    this.fetchData()
   },
   methods: {
     fetchData() {
@@ -118,7 +127,8 @@ export default {
     },
     showMsgDetail(msg) {
       this.dialogVisible = true
-      this.msgDetail = msg
+      this.msgDetail = msg.title
+      this.msgTitle = msg.author
     }
   }
 }
