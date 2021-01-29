@@ -164,15 +164,15 @@ export const constantRoutes = [
     children: [
       {
         path: 'list',
-        name: '策略列表',
+        name: '规则列表',
         component: () => import('@/views/alarm/list/index'),
-        meta: { title: '策略列表', icon: 'table' }
+        meta: { title: '规则列表', icon: 'table' }
       },
       {
         path: 'edit',
-        name: '策略编制',
+        name: '规则编制',
         component: () => import('@/views/alarm/edit/index'),
-        meta: { title: '策略编制', icon: 'tree' }
+        meta: { title: '规则编制', icon: 'tree' }
       }
     ]
   },
