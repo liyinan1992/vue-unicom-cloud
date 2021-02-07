@@ -36,28 +36,28 @@
       </el-table-column>
       <el-table-column label="IP" width="150">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.ip }}
         </template>
       </el-table-column>
       <el-table-column label="设备名称" width="150" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="巡检时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          <span>{{ scope.row.time }}</span>
         </template>
       </el-table-column>
       <el-table-column label="执行命令" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.code }}</span>
         </template>
       </el-table-column>
       <el-table-column label="执行结果" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="showMsgDetail(scope.row.title)">查看</el-button>
+          <el-button @click="showMsgDetail(scope.row.result)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,6 +83,28 @@
 <script>
 import { getList } from '@/api/server/history'
 
+var curDate = new Date()
+
+function dateFormat(fmt, date) {
+  let ret
+  const opt = {
+    'Y+': date.getFullYear().toString(), // 年
+    'm+': (date.getMonth() + 1).toString(), // 月
+    'd+': date.getDate().toString(), // 日
+    'H+': date.getHours().toString(), // 时
+    'M+': date.getMinutes().toString(), // 分
+    'S+': date.getSeconds().toString() // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  }
+  for (const k in opt) {
+    ret = new RegExp('(' + k + ')').exec(fmt)
+    if (ret) {
+      fmt = fmt.replace(ret[1], (ret[1].length === 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, '0')))
+    }
+  }
+  return fmt
+}
+
 export default {
   data() {
     return {
@@ -94,16 +116,16 @@ export default {
       form: {
         dc: '西咸',
         ip: '',
-        time: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
+        time: [new Date(curDate.getTime() - 24 * 60 * 60 * 1000), curDate]
       },
       dialogVisible: false,
       msgDetail: null
     }
   },
   methods: {
-    fetchData() {
+    fetchData(form) {
       this.listLoading = true
-      getList(this.form).then(response => {
+      getList(form).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -113,12 +135,19 @@ export default {
       this.currentPage = currentPage
     },
     doSearch() {
-      console.log(this.form.time)
-      this.fetchData()
+      var param = {}
+      param.dc = this.form.dc
+      param.ip = this.form.ip
+      param.startTime = dateFormat('YYYY-mm-dd HH:MM:SS', this.form.time[0])
+      param.endTime = dateFormat('YYYY-mm-dd HH:MM:SS', this.form.time[1])
+      this.fetchData(param)
     },
     showMsgDetail(msg) {
       this.dialogVisible = true
       this.msgDetail = msg
+    },
+    handleClose() {
+      this.dialogVisible = false
     }
   }
 }

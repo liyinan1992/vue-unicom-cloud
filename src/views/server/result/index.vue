@@ -42,12 +42,12 @@
       </el-table-column>
       <el-table-column label="IP" width="150" fixed>
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.ip }}
         </template>
       </el-table-column>
       <el-table-column label="设备名称" width="150" align="center" fixed>
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -66,42 +66,42 @@
       <el-table-column align="center" prop="created_at" label="巡检时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          <span>{{ scope.row.time }}</span>
         </template>
       </el-table-column>
       <el-table-column label="CPU利用率" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.cpuAvb }}</span>
         </template>
       </el-table-column>
       <el-table-column label="内存利用率" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.memeryAvb }}</span>
         </template>
       </el-table-column>
       <el-table-column label="存储利用率" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.storageAvb }}</span>
         </template>
       </el-table-column>
       <el-table-column label="服务情况" width="200" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="showMsgDetail(scope.row.title)">{{ scope.row.author }}</el-button>
+          <el-button type="text" @click="showMsgDetail(scope.row.serviceDetail)">{{ scope.row.serviceStatus }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="网络连接状态" width="200" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="showMsgDetail(scope.row.title)">{{ scope.row.author }}</el-button>
+          <el-button type="text" @click="showMsgDetail(scope.row.netDetail)">{{ scope.row.netStatus }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="丢包状况" width="200" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="showMsgDetail(scope.row.title)">{{ scope.row.author }}</el-button>
+          <el-button type="text" @click="showMsgDetail(scope.row.pingDetail)">{{ scope.row.pingStatus }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="利用率趋势" width="100" align="center">
         <template slot-scope="scope">
-          <el-button @click="showAvbDetail(scope.row.title)">查看</el-button>
+          <el-button @click="showAvbDetail(scope.row.ip)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -154,6 +154,7 @@
 
 <script>
 import { getList } from '@/api/server/result'
+import { getChart } from '@/api/server/result'
 import LineChart from './components/LineChart'
 
 const lineChartData = {
@@ -210,30 +211,39 @@ export default {
       dialogVisible: false,
       chartVisible: false,
       msgDetail: null,
-      chartDetail: null,
       lineChartData: lineChartData
     }
   },
   created() {
-    this.fetchData()
+    this.fetchData(this.form)
   },
   methods: {
-    fetchData() {
+    fetchData(form) {
       this.listLoading = true
-      getList().then(response => {
+      getList(form).then(response => {
         this.list = response.data.items
         this.total = response.data.total
+        this.description = response.data.description
         this.listLoading = false
+      })
+    },
+    fetchChartData(param) {
+      getChart(param).then(response => {
+        this.lineChartData = response.data.items[0]
       })
     },
     current_change(currentPage) {
       this.currentPage = currentPage
     },
     doSearch() {
-      console.log('查询')
+      this.fetchData(this.form)
     },
     doCancel() {
-      console.log('重置')
+      this.form = {
+        dc: '西咸',
+        ip: '',
+        status: ['异常']
+      }
     },
     showMsgDetail(msg) {
       this.dialogVisible = true
@@ -241,7 +251,10 @@ export default {
     },
     showAvbDetail(msg) {
       this.chartVisible = true
-      this.chartDetail = msg
+      var param = {}
+      param.dc = this.form.dc
+      param.ip = msg
+      // this.fetchChartData(param)
     },
     handleClose() {
       this.dialogVisible = false
