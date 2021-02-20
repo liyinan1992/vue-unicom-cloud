@@ -38,7 +38,7 @@ module.exports = {
     },
     proxy: {
       '/itpatrol': {
-        target: 'http://10.3.71.162:8015',
+        target: 'http://10.3.71.133:8015',
         changeOrigin: true,
         pathRewrite: {
           '^/itpatrol': '/itpatrol'

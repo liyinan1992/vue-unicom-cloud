@@ -221,7 +221,16 @@ export default {
   methods: {
     fetchData(form) {
       this.listLoading = true
-      getList(form).then(response => {
+      // status 1:正常，2:异常，0:全部
+      var params = {
+        dc: '',
+        ip: '',
+        status: ''
+      }
+      params.dc = form.dc
+      params.ip = form.ip
+      if (this.arrayEqual(form.status, ['正常'])) { params.status = 1 } else if (this.arrayEqual(form.status, ['异常'])) { params.status = 2 } else { params.status = 0 }
+      getList(params).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.description = response.data.description
@@ -255,13 +264,21 @@ export default {
       var param = {}
       param.dc = this.form.dc
       param.ip = msg
-      // this.fetchChartData(param)
+      this.fetchChartData(param)
     },
     handleClose() {
       this.dialogVisible = false
     },
     handleChartClose() {
       this.chartVisible = false
+    },
+    arrayEqual(arr1, arr2) {
+      if (arr1 === arr2) return true
+      if (arr1.length !== arr2.length) return false
+      for (var i = 0; i < arr1.length; ++i) {
+        if (arr1[i] !== arr2[i]) return false
+      }
+      return true
     }
   }
 }
