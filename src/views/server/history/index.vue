@@ -117,7 +117,7 @@ export default {
       form: {
         dc: '西咸',
         ip: '',
-        time: [new Date(curDate.getTime() - 24 * 60 * 60 * 1000), curDate]
+        time: [new Date(curDate.getTime() - 10 * 60 * 1000), curDate]
       },
       dialogVisible: false,
       msgDetail: null

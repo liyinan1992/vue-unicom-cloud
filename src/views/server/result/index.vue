@@ -132,7 +132,7 @@
         <h3>CPU利用率趋势（%）</h3>
       </el-row>
       <el-row>
-        <line-chart :chart-data="lineChartData.cpuAvb" />
+        <line-chart :chart-data="lineChartData.cpuavb" />
       </el-row>
       <el-row>
         <h3>内存利用率趋势（%）</h3>
@@ -141,7 +141,7 @@
         <line-chart :chart-data="lineChartData.memeryAvb" />
       </el-row>
       <el-row>
-        <h3>内存利用率趋势（%）</h3>
+        <h3>磁盘利用率趋势（%）</h3>
       </el-row>
       <el-row>
         <line-chart :chart-data="lineChartData.memeryAvb" />
@@ -159,7 +159,7 @@ import { getChart } from '@/api/server/result'
 import LineChart from './components/LineChart'
 
 const lineChartData = {
-  cpuAvb: {
+  cpuavb: {
     timeData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
     expectedData: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
     actualData: [90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98]
@@ -239,7 +239,7 @@ export default {
     },
     fetchChartData(param) {
       getChart(param).then(response => {
-        this.lineChartData = response.data.items[0]
+        this.lineChartData = response.data.items
       })
     },
     current_change(currentPage) {

@@ -73,7 +73,8 @@ export const constantRoutes = [
         name: '巡检历史',
         component: () => import('@/views/server/history/index'),
         meta: { title: '巡检历史', icon: 'tree' }
-      },
+      }
+      /*
       {
         path: 'abnormal',
         name: '异常结果',
@@ -86,9 +87,11 @@ export const constantRoutes = [
         component: () => import('@/views/server/instruction/index'),
         meta: { title: '指令执行', icon: 'el-icon-edit' }
       }
+      */
     ]
   },
 
+  /*
   {
     path: '/net',
     component: Layout,
@@ -176,6 +179,7 @@ export const constantRoutes = [
       }
     ]
   },
+  */
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
