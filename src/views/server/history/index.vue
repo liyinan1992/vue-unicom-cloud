@@ -73,7 +73,7 @@
       width="50%"
       :before-close="handleClose"
     >
-      <span>{{ msgDetail }}</span>
+      <pre><span>{{ msgDetail }}</span></pre>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>

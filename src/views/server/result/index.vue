@@ -71,17 +71,17 @@
       </el-table-column>
       <el-table-column label="CPU利用率" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.cpuAvb }}</span>
+          <span>{{ scope.row.cpuAvb }}%</span>
         </template>
       </el-table-column>
       <el-table-column label="内存利用率" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.memeryAvb }}</span>
+          <span>{{ scope.row.memeryAvb }}%</span>
         </template>
       </el-table-column>
       <el-table-column label="存储利用率" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.storageAvb }}</span>
+          <span>{{ scope.row.storageAvb }}%</span>
         </template>
       </el-table-column>
       <el-table-column label="服务情况" width="200" align="center">
@@ -117,7 +117,7 @@
       width="30%"
       :before-close="handleClose"
     >
-      <span>{{ msgDetail }}</span>
+      <pre><span>{{ msgDetail }}</span></pre>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
