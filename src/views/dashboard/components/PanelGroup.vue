@@ -1,41 +1,41 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="8" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
+      <div class="card-panel" @click="handleSetLineChartData('cpuavb')">
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          <svg-icon icon-class="dashboard" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             CPU利用率
           </div>
-          <count-to :start-val="0" :end-val="60" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="cpuAvb" :duration="2000" :decimals="2" class="card-panel-num" />
           <span>%</span>
         </div>
       </div></el-col>
     <el-col :xs="12" :sm="12" :lg="8" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('messages')">
+      <div class="card-panel" @click="handleSetLineChartData('memeryAvb')">
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
+          <svg-icon icon-class="tab" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             内存利用率
           </div>
-          <count-to :start-val="0" :end-val="81" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="memeryAvb" :duration="2000" :decimals="2" class="card-panel-num" />
           <span>%</span>
         </div>
       </div></el-col>
     <el-col :xs="12" :sm="12" :lg="8" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('purchases')">
+      <div class="card-panel" @click="handleSetLineChartData('storageAvb')">
         <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
+          <svg-icon icon-class="example" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            硬盘利用率
+            存储利用率
           </div>
-          <count-to :start-val="0" :end-val="92" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="storageAvb" :duration="2000" :decimals="2" class="card-panel-num" />
           <span>%</span>
         </div>
       </div></el-col>
@@ -43,13 +43,31 @@
 </template>
 
 <script>
+import { getAvb } from '@/api/dashboard'
 import CountTo from 'vue-count-to'
 
 export default {
   components: {
     CountTo
   },
+  data() {
+    return {
+      cpuAvb: 60,
+      memeryAvb: 60,
+      storageAvb: 60
+    }
+  },
+  created() {
+    this.fetchData()
+  },
   methods: {
+    fetchData() {
+      getAvb().then(response => {
+        this.cpuAvb = response.data.items.cpuAvb
+        this.memeryAvb = response.data.items.memeryAvb
+        this.storageAvb = response.data.items.storageAvb
+      })
+    },
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
     }
