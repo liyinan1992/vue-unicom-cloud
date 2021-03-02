@@ -91,7 +91,10 @@ export default {
           }
         },
         legend: {
-          data: ['预警值', '实际值']
+          data: ['预警值', '实际值'],
+          selected: {
+            '预警值': false
+          }
         },
         series: [{
           name: '预警值', itemStyle: {

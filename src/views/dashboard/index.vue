@@ -14,13 +14,13 @@
             <div slot="header" class="clearfix">
               <span>巡检概况</span>
             </div>
-            <div class="text item">
+            <div class="text item" @click="goResult()">
               总巡检：{{ totalNum }}台
             </div>
-            <div class="text item">
+            <div class="text item" @click="goHistory()">
               巡检成功：{{ successNum }}台
             </div>
-            <div class="text item">
+            <div class="text item" @click="goAbnormal()">
               指标异常：{{ abnormalNum }}台
             </div>
           </el-card>
@@ -120,6 +120,15 @@ export default {
       } else {
         this.avbType = 'CPU'
       }
+    },
+    goResult() {
+      this.$router.push('/server/result')
+    },
+    goHistory() {
+      this.$router.push('/server/history')
+    },
+    goAbnormal() {
+      this.$router.push('/server/abnormal')
     }
   }
 }

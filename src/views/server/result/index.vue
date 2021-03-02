@@ -3,14 +3,16 @@
     <el-row>
       <h3>{{ description }}</h3>
     </el-row>
-    <el-form ref="form" :inline="true" :model="form" label-width="120px">
-      <el-radio-group v-model="form.dc">
-        <el-radio-button label="西咸" />
-        <el-radio-button label="CT-O" />
-        <el-radio-button label="测试区" />
-      </el-radio-group>
+    <el-form ref="form" :inline="true" :model="form" label-width="80px">
+      <el-form-item>
+        <el-radio-group v-model="form.dc">
+          <el-radio-button label="西咸" />
+          <el-radio-button label="CT-O" />
+          <el-radio-button label="测试区" />
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="IP">
-        <el-input v-model="form.ip" />
+        <el-input v-model="form.ip" placeholder="为空时默认全部" />
       </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="form.status" multiple placeholder="请选择">
@@ -101,7 +103,7 @@
       </el-table-column>
       <el-table-column label="利用率趋势" width="100" align="center">
         <template slot-scope="scope">
-          <el-button @click="showAvbDetail(scope.row.ip)">查看</el-button>
+          <el-button @click="showAvbDetail(scope.row.ip, '', '')">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -128,6 +130,23 @@
       fullscreen="true"
       :before-close="handleChartClose"
     >
+      <el-form ref="form" :inline="true" :model="chartForm" label-width="120px">
+        <el-form-item label="IP">
+          <el-input v-model="chartForm.ip" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-date-picker
+            v-model="chartForm.time"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="doChartSearch">查询</el-button>
+        </el-form-item>
+      </el-form>
       <el-row>
         <h3>CPU利用率趋势（%）</h3>
       </el-row>
@@ -156,6 +175,8 @@
 <script>
 import { getList } from '@/api/server/result'
 import { getChart } from '@/api/server/result'
+import { dateFormat } from '@/common/dateFormat'
+import { arrayEqual } from '@/common/arrayEqual'
 import LineChart from './components/LineChart'
 
 const lineChartData = {
@@ -175,6 +196,8 @@ const lineChartData = {
     actualData: [90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98, 90, 92, 91, 54, 62, 40, 45, 98]
   }
 }
+
+var curDate = new Date()
 
 export default {
   filters: {
@@ -201,6 +224,11 @@ export default {
         dc: '西咸',
         ip: '',
         status: ['异常']
+      },
+      chartForm: {
+        dc: '',
+        ip: '',
+        time: [new Date(curDate.getTime() - 10 * 60 * 1000), curDate]
       },
       options: [{
         value: '正常',
@@ -229,7 +257,7 @@ export default {
       }
       params.dc = form.dc
       params.ip = form.ip
-      if (this.arrayEqual(form.status, ['正常'])) { params.status = 1 } else if (this.arrayEqual(form.status, ['异常'])) { params.status = 2 } else { params.status = 0 }
+      if (arrayEqual(form.status, ['正常'])) { params.status = 1 } else if (arrayEqual(form.status, ['异常'])) { params.status = 2 } else { params.status = 0 }
       getList(params).then(response => {
         this.list = response.data.items
         this.total = response.data.total
@@ -259,11 +287,15 @@ export default {
       this.dialogVisible = true
       this.msgDetail = msg
     },
-    showAvbDetail(msg) {
+    showAvbDetail(ip, startTime, endTime) {
       this.chartVisible = true
       var param = {}
       param.dc = this.form.dc
-      param.ip = msg
+      param.ip = ip
+      param.startTime = startTime
+      param.endTime = endTime
+      this.chartForm.dc = this.form.dc
+      this.chartForm.ip = ip
       this.fetchChartData(param)
     },
     handleClose() {
@@ -272,13 +304,15 @@ export default {
     handleChartClose() {
       this.chartVisible = false
     },
-    arrayEqual(arr1, arr2) {
-      if (arr1 === arr2) return true
-      if (arr1.length !== arr2.length) return false
-      for (var i = 0; i < arr1.length; ++i) {
-        if (arr1[i] !== arr2[i]) return false
-      }
-      return true
+    doChartSearch() {
+      var startTime = dateFormat('YYYY-mm-dd HH:MM:SS', this.chartForm.time[0])
+      var endTime = dateFormat('YYYY-mm-dd HH:MM:SS', this.chartForm.time[1])
+      var param = {}
+      param.dc = this.chartForm.dc
+      param.ip = this.chartForm.ip
+      param.startTime = startTime
+      param.endTime = endTime
+      this.fetchChartData(param)
     }
   }
 }

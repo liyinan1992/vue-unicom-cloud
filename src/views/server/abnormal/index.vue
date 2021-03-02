@@ -1,15 +1,23 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :inline="true" :model="form" label-width="120px">
-      <el-radio-group v-model="form.dc">
-        <el-radio-button label="西咸" />
-        <el-radio-button label="CT-O" />
-        <el-radio-button label="测试区" />
-      </el-radio-group>
-      <el-form-item label="IP">
-        <el-input v-model="form.ip" />
+    <el-form ref="form" :inline="true" :model="form" label-width="80px">
+      <el-form-item>
+        <el-radio-group v-model="form.dc">
+          <el-radio-button label="西咸" />
+          <el-radio-button label="CT-O" />
+          <el-radio-button label="测试区" />
+        </el-radio-group>
       </el-form-item>
-      <el-form-item label="时间">
+      <el-form-item label="IP">
+        <el-input v-model="form.ip" placeholder="为空时默认全部" />
+      </el-form-item>
+      <el-form-item style="margin:0 20px">
+        <el-radio-group v-model="form.cycle">
+          <el-radio :label="1">当前周期</el-radio>
+          <el-radio :label="2">选择时间</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-if="form.cycle===2" label="时间">
         <el-date-picker
           v-model="form.time"
           type="datetimerange"
@@ -88,6 +96,7 @@
 
 <script>
 import { getList } from '@/api/server/history'
+import { dateFormat } from '@/common/dateFormat'
 
 export default {
   data() {
@@ -100,6 +109,7 @@ export default {
       form: {
         dc: '西咸',
         ip: '',
+        cycle: 1,
         time: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
       },
       dialogVisible: false,
@@ -108,12 +118,12 @@ export default {
     }
   },
   created() {
-    this.fetchData()
+    this.doSearch()
   },
   methods: {
-    fetchData() {
+    fetchData(param) {
       this.listLoading = true
-      getList(this.form).then(response => {
+      getList(param).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -123,8 +133,17 @@ export default {
       this.currentPage = currentPage
     },
     doSearch() {
-      console.log(this.form.time)
-      this.fetchData()
+      var param = {}
+      param.dc = this.form.dc
+      param.ip = this.form.ip
+      if (this.form.cycle === 1) {
+        param.startTime = ''
+        param.endTime = ''
+      } else {
+        param.startTime = dateFormat('YYYY-mm-dd HH:MM:SS', this.form.time[0])
+        param.endTime = dateFormat('YYYY-mm-dd HH:MM:SS', this.form.time[1])
+      }
+      this.fetchData(param)
     },
     showMsgDetail(msg) {
       this.dialogVisible = true

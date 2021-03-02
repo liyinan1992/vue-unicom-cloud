@@ -64,7 +64,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'result',
-        name: '当前巡检结果',
+        name: '巡检结果',
         component: () => import('@/views/server/result/index'),
         meta: { title: '当前巡检结果', icon: 'table' }
       },
@@ -73,14 +73,14 @@ export const constantRoutes = [
         name: '巡检历史',
         component: () => import('@/views/server/history/index'),
         meta: { title: '巡检历史', icon: 'tree' }
-      }
-      /*
+      },
       {
         path: 'abnormal',
-        name: '异常结果',
+        name: '指标异常',
         component: () => import('@/views/server/abnormal/index'),
-        meta: { title: '异常结果', icon: 'el-icon-warning' }
-      },
+        meta: { title: '指标异常', icon: 'el-icon-warning' }
+      }
+      /*
       {
         path: 'instruction',
         name: '指令执行',
