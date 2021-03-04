@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/server/history'
+import { getList } from '@/api/server/abnormal'
 import { dateFormat } from '@/common/dateFormat'
 
 export default {

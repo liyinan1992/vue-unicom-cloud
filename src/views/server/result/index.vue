@@ -106,6 +106,11 @@
           <el-button @click="showAvbDetail(scope.row.ip, '', '')">查看</el-button>
         </template>
       </el-table-column>
+      <el-table-column label="巡检详情" width="100" align="center">
+        <template slot-scope="scope">
+          <el-button @click="showAllDetail(scope.row.ip)">查看</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       layout="prev, pager, next"
@@ -160,13 +165,61 @@
         <line-chart :chart-data="lineChartData.memeryAvb" />
       </el-row>
       <el-row>
-        <h3>磁盘利用率趋势（%）</h3>
+        <h3>存储利用率趋势（%）</h3>
       </el-row>
       <el-row>
-        <line-chart :chart-data="lineChartData.memeryAvb" />
+        <line-chart :chart-data="lineChartData.storageAvb" />
       </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="chartVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="详情"
+      :visible.sync="dialogVisible"
+      width="50%"
+      :before-close="handleClose"
+    >
+      <pre><span>{{ msgDetail }}</span></pre>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="巡检执行详情"
+      :visible.sync="detailVisible"
+      fullscreen="true"
+      :before-close="handleDetailClose"
+    >
+      <el-collapse>
+        <el-collapse-item v-for="detail in allDetail" :key="detail.name">
+          <template slot="title">
+            {{ detail.name }}<i v-if="detail.status==='异常'" class="header-icon el-icon-info" />
+          </template>
+          <div>
+            <b>巡检结果：</b>
+            <br>
+            <pre>{{ detail.status }}</pre>
+          </div>
+          <div>
+            <b>巡检时间：</b>
+            <br>
+            <pre>{{ detail.time }}</pre>
+          </div>
+          <div>
+            <b>巡检指令：</b>
+            <br>
+            <pre>{{ detail.code }}</pre>
+          </div>
+          <div>
+            <b>执行结果：</b>
+            <br>
+            <pre>{{ detail.result }}</pre>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="detailVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -175,6 +228,7 @@
 <script>
 import { getList } from '@/api/server/result'
 import { getChart } from '@/api/server/result'
+import { getDetail } from '@/api/server/result'
 import { dateFormat } from '@/common/dateFormat'
 import { arrayEqual } from '@/common/arrayEqual'
 import LineChart from './components/LineChart'
@@ -239,7 +293,9 @@ export default {
       }],
       dialogVisible: false,
       chartVisible: false,
+      detailVisible: false,
       msgDetail: null,
+      allDetail: [],
       lineChartData: lineChartData
     }
   },
@@ -270,6 +326,11 @@ export default {
         this.lineChartData = response.data.items
       })
     },
+    fetchDetailData(param) {
+      getDetail(param).then(response => {
+        this.allDetail = response.data.items
+      })
+    },
     current_change(currentPage) {
       this.currentPage = currentPage
     },
@@ -298,11 +359,21 @@ export default {
       this.chartForm.ip = ip
       this.fetchChartData(param)
     },
+    showAllDetail(ip) {
+      this.detailVisible = true
+      var param = {}
+      param.dc = this.form.dc
+      param.ip = ip
+      this.fetchDetailData(param)
+    },
     handleClose() {
       this.dialogVisible = false
     },
     handleChartClose() {
       this.chartVisible = false
+    },
+    handleDetailClose() {
+      this.detailVisible = false
     },
     doChartSearch() {
       var startTime = dateFormat('YYYY-mm-dd HH:MM:SS', this.chartForm.time[0])

@@ -135,29 +135,31 @@ export const constantRoutes = [
       }
     ]
   },
+  */
 
   {
     path: '/strategy',
     component: Layout,
-    redirect: '/strategy/list',
-    name: '作业策略',
-    meta: { title: '作业策略', icon: 'el-icon-s-help' },
+    redirect: '/strategy/',
+    name: '巡检管理',
+    meta: { title: '巡检管理', icon: 'el-icon-s-home' },
     children: [
       {
-        path: 'list',
-        name: '策略列表',
-        component: () => import('@/views/strategy/list/index'),
-        meta: { title: '策略列表', icon: 'table' }
+        path: 'server',
+        name: '主机管理',
+        component: () => import('@/views/strategy/server/index'),
+        meta: { title: '主机管理', icon: 'el-icon-s-platform' }
       },
       {
-        path: 'edit',
-        name: '策略编制',
-        component: () => import('@/views/strategy/edit/index'),
-        meta: { title: '策略编制', icon: 'tree' }
+        path: 'instruction',
+        name: '指令管理',
+        component: () => import('@/views/strategy/instruction/index'),
+        meta: { title: '指令管理', icon: 'el-icon-s-order' }
       }
     ]
   },
 
+  /*
   {
     path: '/alarm',
     component: Layout,

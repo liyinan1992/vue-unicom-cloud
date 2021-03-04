@@ -15,3 +15,11 @@ export function getChart(params) {
     params
   })
 }
+
+export function getDetail(params) {
+  return request({
+    url: '/commands',
+    method: 'get',
+    params
+  })
+}
