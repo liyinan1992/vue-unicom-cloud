@@ -47,7 +47,7 @@
       <el-table-column align="center" label="信息修改时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.time }}</span>user
+          <span>{{ scope.row.time }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -58,20 +58,25 @@
       @current-change="current_change"
     />
     <el-dialog title="新增主机" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
+      <el-form :model="dialogForm" label-width="120px">
+        <el-form-item label="IP">
           <el-input v-model="dialogForm.ip" />
         </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
+        <el-form-item label="所属资源池">
+          <el-select v-model="dialogForm.dc" placeholder="请选择所属资源池">
+            <el-option label="西咸" value="西咸" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="巡检用户">
+          <el-input v-model="dialogForm.user" />
+        </el-form-item>
+        <el-form-item v-if="passwordVisible" label="用户密码">
+          <el-input v-model="dialogForm.password" placeholder="请输入密码" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="handleSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -90,19 +95,26 @@ export default {
       pagesize: 5,
       currentPage: 1,
       dialogFormVisible: false,
+      passwordVisible: true,
       form: {
         dc: '西咸',
         ip: ''
+      },
+      dialogForm: {
+        ip: '',
+        dc: '西咸',
+        user: '',
+        password: ''
       }
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData(this.form)
   },
   methods: {
-    fetchData() {
+    fetchData(param) {
       this.listLoading = true
-      getServerList().then(response => {
+      getServerList(param).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -112,10 +124,20 @@ export default {
       this.currentPage = currentPage
     },
     doSearch() {
-      console.log('查询')
+      this.fetchData(this.form)
     },
     showDialogForm() {
       this.dialogFormVisible = true
+    },
+    handleSubmit() {
+      setServer(this.dialogForm).then(response => {
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '成功',
+          message: '新增资源成功',
+          type: 'success'
+        })
+      })
     }
   }
 }
