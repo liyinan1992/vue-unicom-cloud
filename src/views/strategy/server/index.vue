@@ -44,7 +44,7 @@
           <span>{{ scope.row.user }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="信息修改时间" width="200">
+      <el-table-column align="center" label="信息修改时间" width="300">
         <template slot-scope="scope">
           <i class="el-icon-time" />
           <span>{{ scope.row.time }}</span>

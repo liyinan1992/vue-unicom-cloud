@@ -44,23 +44,23 @@
       </el-table-column>
       <el-table-column label="IP" width="150">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.ip }}
         </template>
       </el-table-column>
       <el-table-column label="设备名称" width="150" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="巡检时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          <span>{{ scope.row.time }}</span>
         </template>
       </el-table-column>
       <el-table-column label="异常描述" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.description }}</span>
         </template>
       </el-table-column>
       <el-table-column label="详情" width="150" align="center">
@@ -147,8 +147,8 @@ export default {
     },
     showMsgDetail(msg) {
       this.dialogVisible = true
-      this.msgDetail = msg.title
-      this.msgTitle = msg.author
+      this.msgDetail = msg.result
+      this.msgTitle = msg.code
     }
   }
 }
