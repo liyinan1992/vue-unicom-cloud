@@ -4,7 +4,8 @@ export function getServerList(params) {
   return request({
     url: '/hostlist',
     method: 'get',
-    params
+    params,
+    baseURL: 'mypatrol'
   })
 }
 
@@ -12,6 +13,7 @@ export function setServer(data) {
   return request({
     url: '/appendhost',
     method: 'post',
-    data
+    data,
+    baseURL: 'mypatrol'
   })
 }

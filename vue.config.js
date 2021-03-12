@@ -38,11 +38,19 @@ module.exports = {
     },
     proxy: {
       '/itpatrol': {
-        // target: 'http://10.170.63.86:8015',
-        target: 'http://10.3.71.146:8015',
+        target: 'http://10.170.63.86:8017',
+        // target: 'http://10.3.71.146:8017',
         changeOrigin: true,
         pathRewrite: {
           '^/itpatrol': '/itpatrol'
+        }
+      },
+      '/mypatrol': {
+        target: 'http://10.170.63.86:8015',
+        // target: 'http://10.3.71.146:8015',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/mypatrol': '/itpatrol'
         }
       }
     }
