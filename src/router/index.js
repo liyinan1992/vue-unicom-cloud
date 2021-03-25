@@ -149,12 +149,6 @@ export const constantRoutes = [
         name: '主机管理',
         component: () => import('@/views/strategy/server/index'),
         meta: { title: '主机管理', icon: 'el-icon-s-platform' }
-      },
-      {
-        path: 'instruction',
-        name: '指令管理',
-        component: () => import('@/views/strategy/instruction/index'),
-        meta: { title: '指令管理', icon: 'el-icon-s-order' }
       }
     ]
   },

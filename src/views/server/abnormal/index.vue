@@ -98,6 +98,8 @@
 import { getList } from '@/api/server/abnormal'
 import { dateFormat } from '@/common/dateFormat'
 
+var curDate = new Date()
+
 export default {
   data() {
     return {
@@ -110,7 +112,7 @@ export default {
         dc: '西咸',
         ip: '',
         cycle: 1,
-        time: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
+        time: [new Date(curDate.getTime() - 10 * 60 * 1000), curDate]
       },
       dialogVisible: false,
       msgDetail: null,
